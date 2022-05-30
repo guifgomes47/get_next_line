@@ -3,23 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: guifgomes <guifgomes@student.42.fr>        +#+  +:+       +#+        */
+/*   By: guilhfer <guilhfer@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 16:48:12 by guifgomes         #+#    #+#             */
-/*   Updated: 2022/05/25 16:55:04 by guifgomes        ###   ########.fr       */
+/*   Updated: 2022/05/30 12:15:03 by guilhfer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
+
+
 
 char	*get_next_line(int fd)
 {
-	size_t		current_buffer;
-	static char	*accumulator;
+	char	*acc;
+	char	*str;
+	int		read_bytes;
 
-	current_buffer = 1;
-	if (!accumulator)
+	str = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+	read_bytes = read(fd, str, BUFFER_SIZE);
+	while (read_bytes > 0)
 	{
-		(char *)malloc(sizeof(char) * ft_strlen(accumulator));
+		printf("%s", str);
+		read_bytes = read(fd, str, BUFFER_SIZE);
+		str[read_bytes] = '\0';
 	}
+	return (str);
 }
