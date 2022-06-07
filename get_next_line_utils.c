@@ -6,7 +6,7 @@
 /*   By: guilhfer <guilhfer@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 16:47:10 by guifgomes         #+#    #+#             */
-/*   Updated: 2022/06/02 15:49:41 by guilhfer         ###   ########.fr       */
+/*   Updated: 2022/06/07 00:35:25 by guilhfer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 	return (ft_strlen(src));
 }
 
-char	*ft_strdup(char *str)
+char	*ft_strdup(const char *str)
 {
 	char	*cpy;
 	size_t	size;
 
 	size = ft_strlen(str) + 1;
 	cpy = malloc(sizeof(char) * size);
-	if (!cpy)
+	if (cpy == NULL)
 		return (NULL);
 	ft_strlcpy(cpy, str, size);
 	return (cpy);
@@ -68,10 +68,19 @@ char	*ft_strjoin(char *s1, char *s2)
 	str = malloc(sizeof(char) * (s1_len + s2_len) + 1);
 	if (!str)
 		return (NULL);
-	ft_strlcpy(str, s1, s1_len + 1);
-	ft_strlcpy(str + s1_len, s2, s2_len + 1);
+	s1_len = 0;
+	while (s1[s1_len])
+	{
+		str[s1_len] = s1[s1_len];
+		s1_len++;
+	}
+	s2_len = 0;
+	while (s2[s2_len])
+	{
+		str[s1_len++] = s2[s2_len++];
+	}
+	str[s1_len] = '\0';
 	free(s1);
-	free(s2);
 	return (str);
 }
 

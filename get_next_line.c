@@ -6,7 +6,7 @@
 /*   By: guilhfer <guilhfer@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/01 12:39:03 by guilhfer          #+#    #+#             */
-/*   Updated: 2022/06/02 15:48:21 by guilhfer         ###   ########.fr       */
+/*   Updated: 2022/06/06 17:13:24 by guilhfer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ char	*get_rest(char *buffer)
 	int		rest_len;
 	char	*rest;
 
-	size = ft_strchr(buffer, '\n') - buffer;
+	size = 0;
+	while (buffer[size] && buffer[size] != '\n')
+		size++;
+	if (!buffer[size])
+		return (free(buffer), NULL);
 	if (buffer[size] == '\n')
 		size++;
 	rest_len = ft_strlen(buffer) - size;
@@ -32,22 +36,25 @@ char	*get_rest(char *buffer)
 		rest[i++] = buffer[size++];
 	rest[i] = '\0';
 	free(buffer);
-	free(rest);
 	return (rest);
 }
 
 char	*get_line(char *line)
 {
-	int		size;
 	int		i;
+	int		size;
 	char	*format;
 
-	size = ft_strchr(line, '\n') - line;
+	size = 0;
+	if (!line[size])
+		return (NULL);
+	while (line[size] && line[size] != '\n')
+		size++;
 	format = (char *)malloc(size + 2);
 	if (!format)
 		return (NULL);
 	i = 0;
-	while (i < size)
+	while (line[i] && line[i] != '\n')
 	{
 		format[i] = line[i];
 		i++;
@@ -73,8 +80,7 @@ char	*read_file(char *line, int fd)
 		read_bytes = read(fd, find_nl, BUFFER_SIZE);
 		if (read_bytes < 0)
 		{
-			free(find_nl);
-			return (NULL);
+			return (free(find_nl), NULL);
 		}
 		if (read_bytes == 0)
 		{
@@ -83,6 +89,7 @@ char	*read_file(char *line, int fd)
 		}
 		find_nl[read_bytes] = '\0';
 		line = ft_strjoin(line, find_nl);
+		free(find_nl);
 	}
 	return (line);
 }
@@ -92,10 +99,8 @@ char	*get_next_line(int fd)
 	static char	*rest;
 	char		*line;
 
-	if (BUFFER_SIZE <= 0 || fd < 0)
-	{
+	if (BUFFER_SIZE <= 0 || fd < 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	}
 	rest = read_file(rest, fd);
 	line = get_line(rest);
 	rest = get_rest(rest);
